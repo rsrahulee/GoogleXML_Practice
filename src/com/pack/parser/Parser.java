@@ -3,7 +3,6 @@ package com.pack.parser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -18,20 +17,20 @@ public class Parser extends XmlTags {
 	private static final String ns = null;
 	public static Parser INSTANCE = new Parser();
 
-	public List<Entry> parse(InputStream in) throws XmlPullParserException, IOException {
+	public ArrayList<Entry> parse(InputStream inputStream) throws XmlPullParserException, IOException {
 		try {
 			XmlPullParser parser = Xml.newPullParser();
 			parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-			parser.setInput(in, null);
+			parser.setInput(inputStream, null);
 			parser.nextTag();
 			return readRss(parser);
 		} finally {
-			in.close();
+			inputStream.close();
 		}
 	}
 
-	private List<Entry> readRss(XmlPullParser parser) throws XmlPullParserException, IOException {
-		List<Entry> entries = new ArrayList<Entry>();
+	private ArrayList<Entry> readRss(XmlPullParser parser) throws XmlPullParserException, IOException {
+		ArrayList<Entry> entries = new ArrayList<Entry>();
 
 		parser.require(XmlPullParser.START_TAG, ns, RSS);
 		while (parser.next() != XmlPullParser.END_TAG) {
@@ -46,9 +45,9 @@ public class Parser extends XmlTags {
 		return entries;
 	}
 
-	private List<Entry> readXmlTag(XmlPullParser parser) throws XmlPullParserException, IOException {
+	private ArrayList<Entry> readXmlTag(XmlPullParser parser) throws XmlPullParserException, IOException {
 
-		List<Entry> entries = new ArrayList<Entry>();
+		ArrayList<Entry> entries = new ArrayList<Entry>();
 		parser.require(XmlPullParser.START_TAG, ns, CHANNEL);
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -56,7 +55,7 @@ public class Parser extends XmlTags {
 			}
 			String nameItem = parser.getName();
 			if (nameItem.equals(ITEM)) {
-				entries.add(readEntry(parser));
+				entries.add(readDetails(parser));
 			} else {
 				skip(parser);
 			}
@@ -64,7 +63,7 @@ public class Parser extends XmlTags {
 		return entries;
 	}
 
-	private Entry readEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
+	private Entry readDetails(XmlPullParser parser) throws XmlPullParserException, IOException {
 		parser.require(XmlPullParser.START_TAG, ns, ITEM);
 		String title = null;
 		String description = null;

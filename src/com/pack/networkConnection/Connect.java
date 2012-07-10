@@ -12,18 +12,18 @@ public class Connect {
 	
 	public static Connect INSTANCE = new Connect();
 
-	InputStream xml1;
+	InputStream inputStream;
 
 	public InputStream getXmlFromUrl(String url) {
 		try {
-			URL url1 = new URL(url);
-			HttpURLConnection connection = (HttpURLConnection) url1.openConnection();
+			URL xmlUrl = new URL(url);
+			HttpURLConnection connection = (HttpURLConnection) xmlUrl.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("Accept", "application/xml");
 
 			connection.connect();
 
-			xml1 = connection.getInputStream();
+			inputStream = connection.getInputStream();
 
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -32,6 +32,6 @@ public class Connect {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return xml1;
+		return inputStream;
 	}
 }
